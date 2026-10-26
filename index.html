@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demo Berbagi Lokasi</title>
+</head>
+<body style="font-family:Arial;text-align:center;padding:24px">
+  <h2>Demo Berbagi Lokasi</h2>
+  <p>Tekan tombol untuk membagikan lokasi perangkat ini secara sukarela.</p>
+  <button onclick="ambilLokasi()">Bagikan Lokasi Saya</button>
+  <p id="hasil">Lokasi belum dibagikan.</p>
+
+  <script>
+    function ambilLokasi() {
+      const hasil = document.getElementById("hasil");
+
+      if (!navigator.geolocation) {
+        hasil.textContent = "Browser tidak mendukung lokasi.";
+        return;
+      }
+
+      hasil.textContent = "Meminta izin lokasi...";
+
+      navigator.geolocation.getCurrentPosition(
+        function(posisi) {
+          const lat = posisi.coords.latitude;
+          const lon = posisi.coords.longitude;
+          const link = document.createElement("a");
+
+          link.href = "https://www.google.com/maps?q=" + lat + "," + lon;
+          link.target = "_blank";
+          link.rel = "noopener";
+          link.textContent = "Lihat lokasi di Google Maps";
+
+          hasil.textContent = "Lokasi berhasil diperoleh. ";
+          hasil.appendChild(link);
+        },
+        function() {
+          hasil.textContent = "Lokasi gagal diperoleh atau izin ditolak.";
+        }
+      );
+    }
+  </script>
+</body>
+</html>
