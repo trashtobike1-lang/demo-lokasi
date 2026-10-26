@@ -4,44 +4,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Demo Berbagi Lokasi</title>
+  <title>Berbagi Lokasi</title>
 </head>
-<body style="font-family:Arial;text-align:center;padding:24px">
-  <h2>Demo Berbagi Lokasi</h2>
-  <p>Tekan tombol untuk membagikan lokasi perangkat ini secara sukarela.</p>
-  <button onclick="ambilLokasi()">Bagikan Lokasi Saya</button>
-  <p id="hasil">Lokasi belum dibagikan.</p>
+<body style="margin:0;background:#f1f5f9;font-family:Arial,sans-serif">
+  <main style="min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:24px;box-sizing:border-box">
 
-  <script>
-    function ambilLokasi() {
+    <svg width="220" height="180" viewBox="0 0 220 180"
+      role="img" aria-label="Ilustrasi peta dengan penanda lokasi">
+      <rect width="220" height="180" rx="18" fill="#dbeafe"/>
+      <path d="M-10 45 L70 10 L130 65 L230 25
+               M-10 120 L65 80 L125 130 L230 90
+               M45 -10 L85 190 M155 -10 L125 190"
+        fill="none" stroke="#ffffff" stroke-width="15"/>
+      <path d="M-10 45 L70 10 L130 65 L230 25
+               M-10 120 L65 80 L125 130 L230 90"
+        fill="none" stroke="#93c5fd" stroke-width="2"/>
+      <path d="M110 42 C88 42 74 59 74 79
+        C74 105 110 139 110 139
+        S146 105 146 79 C146 59 132 42 110 42Z"
+        fill="#2563eb"/>
+      <circle cx="110" cy="78" r="12" fill="#ffffff"/>
+    </svg>
+
+    <button id="izin" style="margin-top:24px;padding:16px 28px;
+      width:100%;max-width:300px;border:0;border-radius:12px;
+      background:#2563eb;color:white;font-size:17px;font-weight:bold">
+      Izinkan Lokasi
+    </button>
+
+    <p id="hasil" role="status" style="text-align:center;color:#334155"></p>
+
+    <script>
+      const tombol = document.getElementById("izin");
       const hasil = document.getElementById("hasil");
 
-      if (!navigator.geolocation) {
-        hasil.textContent = "Browser tidak mendukung lokasi.";
-        return;
-      }
-
-      hasil.textContent = "Meminta izin lokasi...";
-
-      navigator.geolocation.getCurrentPosition(
-        function(posisi) {
-          const lat = posisi.coords.latitude;
-          const lon = posisi.coords.longitude;
-          const link = document.createElement("a");
-
-          link.href = "https://www.google.com/maps?q=" + lat + "," + lon;
-          link.target = "_blank";
-          link.rel = "noopener";
-          link.textContent = "Lihat lokasi di Google Maps";
-
-          hasil.textContent = "Lokasi berhasil diperoleh. ";
-          hasil.appendChild(link);
-        },
-        function() {
-          hasil.textContent = "Lokasi gagal diperoleh atau izin ditolak.";
+      tombol.addEventListener("click", () => {
+        if (!navigator.geolocation) {
+          hasil.textContent = "Browser tidak mendukung lokasi.";
+          return;
         }
-      );
-    }
-  </script>
+
+        hasil.textContent = "Menunggu izin lokasi...";
+
+        navigator.geolocation.getCurrentPosition(
+          (posisi) => {
+            const lat = posisi.coords.latitude;
+            const lon = posisi.coords.longitude;
+            const tautan = document.createElement("a");
+
+            tautan.href =
+              "https://www.google.com/maps?q=" + lat + "," + lon;
+            tautan.textContent = "Buka lokasi di Google Maps";
+            tautan.target = "_blank";
+            tautan.rel = "noopener";
+
+            hasil.textContent = "Lokasi berhasil diperoleh. ";
+            hasil.appendChild(tautan);
+          },
+          () => {
+            hasil.textContent =
+              "Lokasi tidak tersedia atau izin ditolak.";
+          },
+          { enableHighAccuracy: true, timeout: 15000 }
+        );
+      });
+    </script>
+  </main>
 </body>
 </html>
